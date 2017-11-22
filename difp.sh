@@ -5,27 +5,27 @@ cat << EOF
 Usage: difp [subcommand] [<plist_name>]
 
 Subcommand:
-    list   [plist_name]:     List plist file (Under the \$WPLIST_PLIST_LOCATION)
+    list   [plist_name]:     List plist file (Under the \$DIFP_PLIST_LOCATION)
     show   <plist_name>:     defaults read <plist_name>
     watch  <plist_name>:     Watch diff <plist_name> (Stop with Ctrl+C)
     before <plist_name>:     defaults read > <plist_name>.bef.txt
     after  <plist_name>:     defaults read > <plist_name>.aft.txt
-    diff   <plist_name>:     diff \$WPLIST_DIFF_OPTIONS <plist_name>.bef.txt <plist_name>.aft.txt
+    diff   <plist_name>:     diff \$DIFP_DIFF_OPTIONS <plist_name>.bef.txt <plist_name>.aft.txt
 
 Settings:
-    export WPLIST_PLIST_LOCATION="~/Library/Preferences"
-    export WPLIST_DIFF_OPTIONS="--side-by-side --left-column --width=150"
+    export DIFP_PLIST_LOCATION="~/Library/Preferences"
+    export DIFP_DIFF_OPTIONS="--side-by-side --left-column --width=150"
 
 EOF
 exit 1
 }
 
 # Settings
-WPLIST_DIFF_OPTIONS=${WPLIST_DIFF_OPTIONS:="--side-by-side --left-column --width=150"}
-WPLIST_PLIST_LOCATION=${WPLIST_PLIST_LOCATION:="~/Library/Preferences"}
+DIFP_DIFF_OPTIONS=${DIFP_DIFF_OPTIONS:="--side-by-side --left-column --width=150"}
+DIFP_PLIST_LOCATION=${DIFP_PLIST_LOCATION:="~/Library/Preferences"}
 
 _list_all() {
-    (cd "$WPLIST_PLIST_LOCATION"; find . -type f -name "*.plist" | sed 's@./@@')
+    (cd "$DIFP_PLIST_LOCATION"; find . -type f -name "*.plist" | sed 's@./@@')
 }
 
 _list() {
@@ -44,18 +44,18 @@ _get_plist() {
         echo -e "----\nError: Please narrow down to one case"
         exit 1
     fi
-    WPLIST_PLIST_NAME="${plists[0]}"
+    DIFP_PLIST_NAME="${plists[0]}"
 }
 
 _show() {
     _get_plist "$1"
-    defaults read "$WPLIST_PLIST_LOCATION/$WPLIST_PLIST_NAME"
+    defaults read "$DIFP_PLIST_LOCATION/$DIFP_PLIST_NAME"
 }
 
 _output_plist() {
     _get_plist "$1"
-    # defaults read "$WPLIST_PLIST_LOCATION/$WPLIST_PLIST_NAME" | tee "$WPLIST_PLIST_NAME.$2.txt"
-    defaults read "$WPLIST_PLIST_LOCATION/$WPLIST_PLIST_NAME" > "$WPLIST_PLIST_NAME.$2.txt"
+    # defaults read "$DIFP_PLIST_LOCATION/$DIFP_PLIST_NAME" | tee "$DIFP_PLIST_NAME.$2.txt"
+    defaults read "$DIFP_PLIST_LOCATION/$DIFP_PLIST_NAME" > "$DIFP_PLIST_NAME.$2.txt"
 }
 
 _before() {
@@ -76,12 +76,12 @@ _diff() {
 
     is_err=0
     _get_plist "$1"
-    local beffile="$WPLIST_PLIST_NAME.bef.txt"
-    local aftfile="$WPLIST_PLIST_NAME.aft.txt"
+    local beffile="$DIFP_PLIST_NAME.bef.txt"
+    local aftfile="$DIFP_PLIST_NAME.aft.txt"
     _check_file "$beffile" || is_err=1
     _check_file "$aftfile" || is_err=1
     if [[ $is_err -eq 0 ]]; then
-        diff $WPLIST_DIFF_OPTIONS "$beffile" "$aftfile" | tee "$WPLIST_PLIST_NAME.diff.txt"
+        diff $DIFP_DIFF_OPTIONS "$beffile" "$aftfile" | tee "$DIFP_PLIST_NAME.diff.txt"
     else
         echo "==> Use the \"before\" and \"after\" commands beforehand"
         exit 1
@@ -104,21 +104,21 @@ _watch() {
 _options() {
     local sumcmd="$1"
     case "$sumcmd" in 
-        list)   WPLIST_FUNC="_list";   shift; WPLIST_ARGS="$@" ;;
-        show)   WPLIST_FUNC="_show";   shift; WPLIST_ARGS="$@" ;;
-        before) WPLIST_FUNC="_before"; shift; WPLIST_ARGS="$@" ;;
-        after)  WPLIST_FUNC="_after";  shift; WPLIST_ARGS="$@" ;;
-        diff)   WPLIST_FUNC="_diff";   shift; WPLIST_ARGS="$@" ;;
-        watch)  WPLIST_FUNC="_watch";  shift; WPLIST_ARGS="$@" ;;
+        list)   DIFP_FUNC="_list";   shift; DIFP_ARGS="$@" ;;
+        show)   DIFP_FUNC="_show";   shift; DIFP_ARGS="$@" ;;
+        before) DIFP_FUNC="_before"; shift; DIFP_ARGS="$@" ;;
+        after)  DIFP_FUNC="_after";  shift; DIFP_ARGS="$@" ;;
+        diff)   DIFP_FUNC="_diff";   shift; DIFP_ARGS="$@" ;;
+        watch)  DIFP_FUNC="_watch";  shift; DIFP_ARGS="$@" ;;
         *) usage ;;
     esac
 }
 
 _check() {
-    WPLIST_PLIST_LOCATION=$(echo $WPLIST_PLIST_LOCATION | sed "s@~@$HOME@")
-    if [[ ! -d "$WPLIST_PLIST_LOCATION" ]]; then
-        echo "Error: $WPLIST_PLIST_LOCATION is not found"
-		echo "==> Please redefine or unset: \$WPLIST_PLIST_LOCATION"
+    DIFP_PLIST_LOCATION=$(echo $DIFP_PLIST_LOCATION | sed "s@~@$HOME@")
+    if [[ ! -d "$DIFP_PLIST_LOCATION" ]]; then
+        echo "Error: $DIFP_PLIST_LOCATION is not found"
+		echo "==> Please redefine or unset: \$DIFP_PLIST_LOCATION"
         exit 1
     fi
 }
@@ -126,7 +126,7 @@ _check() {
 main() {
 	_check
     _options "$@"
-    "$WPLIST_FUNC" "$WPLIST_ARGS" && return 0 || return 1
+    "$DIFP_FUNC" "$DIFP_ARGS" && return 0 || return 1
 }
 
 main "$@"
