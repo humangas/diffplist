@@ -118,13 +118,13 @@ _check() {
     DIFP_PLIST_LOCATION=$(echo $DIFP_PLIST_LOCATION | sed "s@~@$HOME@")
     if [[ ! -d "$DIFP_PLIST_LOCATION" ]]; then
         echo "Error: $DIFP_PLIST_LOCATION is not found"
-		echo "==> Please redefine or unset: \$DIFP_PLIST_LOCATION"
+        echo "==> Please redefine or unset: \$DIFP_PLIST_LOCATION"
         exit 1
     fi
 }
 
 main() {
-	_check
+    _check
     _options "$@"
     "$DIFP_FUNC" "$DIFP_ARGS" && return 0 || return 1
 }
