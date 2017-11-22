@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 usage() {
-cat << EOF
+cat << EOS
 Usage: difp [subcommand] [<plist_name>]
 
 Subcommand:
@@ -16,7 +16,7 @@ Settings:
     export DIFP_PLIST_LOCATION="~/Library/Preferences"
     export DIFP_DIFF_OPTIONS="--side-by-side --left-column --width=150"
 
-EOF
+EOS
 exit 1
 }
 
