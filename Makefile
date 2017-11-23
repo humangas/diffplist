@@ -18,9 +18,9 @@ help:
 	@echo ""
 
 install:
-	@chmod u+x $(PWD)/difp.sh
-	@rm -f $(HOME)/bin/difp
-	@ln -s $(PWD)/difp.sh $(HOME)/bin/difp
+	@chmod u+x $(PWD)/diffplist.sh
+	@rm -f /usr/local/bin/diffp
+	@ln -s $(PWD)/diffplist.sh /usr/local/bin/diffp
 	
 update:
 	@git pull origin master

@@ -2,7 +2,7 @@
 
 usage() {
 cat << EOS
-Usage: difp [subcommand] [<plist_name>]
+Usage: diffp [subcommand] [<plist_name>]
 
 Subcommand:
     list   [plist_name]:     List plist file (Under the \$DIFP_PLIST_LOCATION)
