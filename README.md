@@ -14,18 +14,17 @@ $ make install
 
 ## Usage
 ```
-Usage: difp [subcommand] [<plist_name>]
+Usage: diffp [subcommand] [<plist_name>]
 
 Subcommand:
-    list   [plist_name]:     List plist file (Under the $DIFP_PLIST_LOCATION)
-    show   <plist_name>:     defaults read <plist_name>
+    list   [plist_name]:     List defaults domains
+    show   [plist_name]:     defaults read [plist_name]
     watch  <plist_name>:     Watch diff <plist_name> (Stop with Ctrl+C)
     before <plist_name>:     defaults read > <plist_name>.bef.txt
     after  <plist_name>:     defaults read > <plist_name>.aft.txt
     diff   <plist_name>:     diff $DIFP_DIFF_OPTIONS <plist_name>.bef.txt <plist_name>.aft.txt
 
 Settings:
-    export DIFP_PLIST_LOCATION="~/Library/Preferences"
     export DIFP_DIFF_OPTIONS="--side-by-side --left-column --width=150"
 
 ```
