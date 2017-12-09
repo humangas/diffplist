@@ -47,7 +47,7 @@ _get_plist() {
 
 _show() {
     for l in $(_list "$1"); do
-        echo "$l"
+        echo "# $l"
         defaults read "$l"
         echo -e ""
     done
