@@ -6,7 +6,7 @@ Usage: diffp [subcommand] [<plist_name>]
 
 Subcommand:
     list   [plist_name]:     List defaults domains
-    show   <plist_name>:     defaults read <plist_name>
+    show   [plist_name]:     defaults read [plist_name]
     watch  <plist_name>:     Watch diff <plist_name> (Stop with Ctrl+C)
     before <plist_name>:     defaults read > <plist_name>.bef.txt
     after  <plist_name>:     defaults read > <plist_name>.aft.txt
@@ -46,8 +46,11 @@ _get_plist() {
 }
 
 _show() {
-    _get_plist "$1"
-    defaults read "$DIFP_PLIST_NAME"
+    for l in $(_list "$1"); do
+        echo "$l"
+        defaults read "$l"
+        echo -e ""
+    done
 }
 
 _output_plist() {
