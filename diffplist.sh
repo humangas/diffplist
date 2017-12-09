@@ -5,7 +5,7 @@ cat << EOS
 Usage: diffp [subcommand] [<plist_name>]
 
 Subcommand:
-    list   [plist_name]:     List plist file (Under the \$DIFP_PLIST_LOCATION)
+    list   [plist_name]:     List defaults domains
     show   <plist_name>:     defaults read <plist_name>
     watch  <plist_name>:     Watch diff <plist_name> (Stop with Ctrl+C)
     before <plist_name>:     defaults read > <plist_name>.bef.txt
@@ -13,7 +13,6 @@ Subcommand:
     diff   <plist_name>:     diff \$DIFP_DIFF_OPTIONS <plist_name>.bef.txt <plist_name>.aft.txt
 
 Settings:
-    export DIFP_PLIST_LOCATION="~/Library/Preferences"
     export DIFP_DIFF_OPTIONS="--side-by-side --left-column --width=150"
 
 EOS
@@ -22,10 +21,9 @@ exit 1
 
 # Settings
 DIFP_DIFF_OPTIONS=${DIFP_DIFF_OPTIONS:="--side-by-side --left-column --width=150"}
-DIFP_PLIST_LOCATION=${DIFP_PLIST_LOCATION:="~/Library/Preferences"}
 
 _list_all() {
-    (cd "$DIFP_PLIST_LOCATION"; find . -type f -name "*.plist" | sed 's@./@@')
+    defaults domains | tr ',' '\n' | sed -e 's/^ //g'
 }
 
 _list() {
@@ -49,13 +47,12 @@ _get_plist() {
 
 _show() {
     _get_plist "$1"
-    defaults read "$DIFP_PLIST_LOCATION/$DIFP_PLIST_NAME"
+    defaults read "$DIFP_PLIST_NAME"
 }
 
 _output_plist() {
     _get_plist "$1"
-    # defaults read "$DIFP_PLIST_LOCATION/$DIFP_PLIST_NAME" | tee "$DIFP_PLIST_NAME.$2.txt"
-    defaults read "$DIFP_PLIST_LOCATION/$DIFP_PLIST_NAME" > "$DIFP_PLIST_NAME.$2.txt"
+    defaults read "$DIFP_PLIST_NAME" > "$DIFP_PLIST_NAME.$2.txt"
 }
 
 _before() {
@@ -114,17 +111,7 @@ _options() {
     esac
 }
 
-_check() {
-    DIFP_PLIST_LOCATION=$(echo $DIFP_PLIST_LOCATION | sed "s@~@$HOME@")
-    if [[ ! -d "$DIFP_PLIST_LOCATION" ]]; then
-        echo "Error: $DIFP_PLIST_LOCATION is not found"
-        echo "==> Please redefine or unset: \$DIFP_PLIST_LOCATION"
-        exit 1
-    fi
-}
-
 main() {
-    _check
     _options "$@"
     "$DIFP_FUNC" "$DIFP_ARGS" && return 0 || return 1
 }
