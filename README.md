@@ -6,6 +6,10 @@
 
 ## Installation
 ```
+$ brew install --HEAD humangas/apps/diffplist
+```
+OR
+```
 $ git clone https://github.com/humangas/diffplist.git
 $ cd diffplist
 $ make install 
